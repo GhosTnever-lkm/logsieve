@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Локальная очистка журналов перед отправкой в поддержку. Предпросмотр каждой замены, обработка в браузере, без загрузки файлов.">
+  <meta name="theme-color" content="#10151f">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <title>LogSieve — очистка логов перед отправкой</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="LogSieve — главная"><span class="brand-mark">⌁</span><span>LogSieve</span></a>
+    <nav aria-label="Основная навигация"><a href="#how">Как это работает</a><a href="#privacy">Приватность</a><a href="https://github.com/GhosTnever-lkm/logsieve" target="_blank" rel="noreferrer">GitHub ↗</a></nav>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему">◐</button>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse"></span> ЛОКАЛЬНЫЙ ИНСТРУМЕНТ · БЕЗ ЗАГРУЗКИ ФАЙЛОВ</div>
+        <h1>Логи можно отправить.<br><span>Лишнее — нет.</span></h1>
+        <p class="hero-text">LogSieve находит токены, ключи и личные пути в игровых и системных логах. Проверьте каждую замену перед экспортом чистого отчёта.</p>
+        <div class="hero-actions"><a class="button primary" href="#workspace">Очистить логи <span>↓</span></a><a class="button secondary" href="#how">Посмотреть как работает</a></div>
+        <div class="trust-row"><span>✓ Файлы остаются на устройстве</span><span>✓ Ничего не запускается</span><span>✓ Все замены видны</span></div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="glow"></div><div class="orb orb-one"></div><div class="orb orb-two"></div>
+        <div class="preview-card">
+          <div class="preview-head"><div class="window-dots"><i></i><i></i><i></i></div><span>engine.log</span><span class="scan-pill"><b></b> проверено</span></div>
+          <div class="code-lines"><div><small>01</small><span>Loading user profile:</span></div><div class="highlight"><small>02</small><span>C:\Users\<em>Player</em>\Documents\Game</span></div><div><small>03</small><span>Session initialized</span></div><div class="highlight"><small>04</small><span>api_key=<em>••••••••••••••••</em></span></div><div><small>05</small><span>Connection established</span></div></div>
+          <div class="preview-foot"><span><b>2</b> возможных секрета скрыто</span><span class="shield">◇</span></div>
+        </div>
+        <div class="float-chip chip-top">✦ <span>Предпросмотр замен</span></div><div class="float-chip chip-bottom">◉ <span>Только в вашем браузере</span></div>
+      </div>
+    </section>
+
+    <section class="workspace" id="workspace">
+      <div class="section-heading"><div><div class="eyebrow">РАБОЧАЯ ОБЛАСТЬ</div><h2>Подготовьте чистый отчёт</h2></div><span class="step-label"><b>1</b> Загрузите · <b>2</b> Проверьте · <b>3</b> Скачайте</span></div>
+      <div class="work-grid">
+        <div class="panel input-panel">
+          <div class="panel-title"><div class="icon-box">＋</div><div><h3>Добавьте файлы логов</h3><p>Несколько файлов за один раз · до 20 МБ каждый</p></div></div>
+          <label class="dropzone" id="dropzone" for="fileInput" tabindex="0" role="button" aria-label="Выбрать файлы логов или перетащить сюда">
+            <input id="fileInput" type="file" multiple accept=".log,.txt,.out,.err,.json,.yaml,.yml,.cfg,.ini,.dmp,text/plain,application/json">
+            <span class="upload-icon">↑</span><strong>Перетащите файлы сюда</strong><span>или <u>выберите на устройстве</u></span><small>LOG · TXT · OUT · ERR · JSON · YAML · CFG</small>
+          </label>
+          <div class="privacy-note"><span>◇</span><p><b>Содержимое не покидает устройство.</b> Обработка выполняется в этой вкладке. LogSieve не отправляет запросы и не хранит исходные файлы.</p></div>
+          <div class="file-list" id="fileList" aria-live="polite"><div class="empty-file">Пока нет добавленных файлов</div></div>
+          <div class="panel-actions"><button class="button secondary small" id="clearAll" type="button" disabled>Очистить список</button><button class="button primary small" id="scanButton" type="button" disabled>Проверить файлы <span>→</span></button></div>
+        </div>
+        <div class="panel options-panel">
+          <div class="panel-title"><div class="icon-box purple">⌕</div><div><h3>Что искать</h3><p>Выберите группы и добавьте свои правила</p></div></div>
+          <div class="rule-groups">
+            <label class="rule-row"><input type="checkbox" checked data-group="credentials"><span class="checkbox-ui"></span><span class="rule-icon orange">⌑</span><span class="rule-copy"><b>Ключи и токены</b><small>API keys, Bearer, JWT, приватные ключи</small></span><span class="rule-count">01</span></label>
+            <label class="rule-row"><input type="checkbox" checked data-group="providers"><span class="checkbox-ui"></span><span class="rule-icon blue">⌘</span><span class="rule-copy"><b>Сервисы и боты</b><small>AWS, Slack, Discord и GitHub tokens</small></span><span class="rule-count">02</span></label>
+            <label class="rule-row"><input type="checkbox" checked data-group="paths"><span class="checkbox-ui"></span><span class="rule-icon green">⌂</span><span class="rule-copy"><b>Личные пути</b><small>Имя пользователя и папки профиля</small></span><span class="rule-count">03</span></label>
+            <label class="rule-row"><input type="checkbox" checked data-group="network"><span class="checkbox-ui"></span><span class="rule-icon pink">◎</span><span class="rule-copy"><b>Сетевые адреса</b><small>Email и локальные IPv4</small></span><span class="rule-count">04</span></label>
+          </div>
+          <label class="custom-rule-label" for="customRule">СВОЁ ПРАВИЛО <span>REGEX</span></label>
+          <div class="custom-rule"><input id="customRule" type="text" placeholder="например: account_id=\\w+" autocomplete="off"><button id="addRule" type="button" aria-label="Добавить правило">＋</button></div>
+          <div class="custom-tags" id="customTags"></div>
+          <details class="advanced"><summary>Настройки замены</summary><label for="replacementText">Чем заменять совпадения</label><input id="replacementText" type="text" value="[REDACTED]" maxlength="40"></details>
+        </div>
+      </div>
+      <div class="results" id="results" hidden>
+        <div class="results-heading"><div><div class="eyebrow">РЕЗУЛЬТАТ АНАЛИЗА</div><h2>Проверьте найденное</h2></div><div class="result-actions"><button class="button secondary small" id="downloadSeparate" type="button">Скачать TXT файлы</button><button class="button primary small" id="downloadZip" type="button">Скачать ZIP <span>↓</span></button></div></div>
+        <div class="summary-cards"><div class="summary-card"><span>ФАЙЛОВ</span><b id="summaryFiles">0</b></div><div class="summary-card"><span>ЗАМЕНЕНО</span><b id="summaryReplacements">0</b></div><div class="summary-card"><span>ПРЕДУПРЕЖДЕНИЯ</span><b id="summaryWarnings">0</b></div><div class="summary-card safe"><span>ОБРАБОТАНО</span><b>Локально ✓</b></div></div>
+        <div id="resultList" class="result-list"></div>
+      </div>
+    </section>
+
+    <section class="how-section" id="how"><div class="section-heading"><div><div class="eyebrow">ПРОСТО И ПРОЗРАЧНО</div><h2>Вы контролируете результат</h2></div><p class="muted">Никакой магии: только понятные правила и видимые изменения.</p></div><div class="how-grid"><article><span>01</span><div class="how-icon">↥</div><h3>Добавьте исходники</h3><p>Перетащите логи игры, программы или сервера. Файлы читаются только этой вкладкой.</p></article><article><span>02</span><div class="how-icon violet">⌕</div><h3>Проверьте находки</h3><p>Посмотрите, что будет скрыто. Можно настроить группы и добавить собственный шаблон.</p></article><article><span>03</span><div class="how-icon teal">↓</div><h3>Скачайте отчёт</h3><p>Получите очищенные файлы или единый ZIP для отправки в службу поддержки.</p></article></div></section>
+
+    <section class="privacy-section" id="privacy"><div class="privacy-shield">◇</div><div><div class="eyebrow">ВАШИ ДАННЫЕ ПОД ВАШИМ КОНТРОЛЕМ</div><h2>Никакой загрузки. Никакой истории.</h2><p>Исходные логи остаются на устройстве. LogSieve работает без сервера, не подключается к сети и не отправляет содержимое файлов. Откройте исходный код и проверьте сами.</p></div><a class="button secondary" href="https://github.com/GhosTnever-lkm/logsieve" target="_blank" rel="noreferrer">Исходный код ↗</a></section>
+  </main>
+  <footer><a class="brand" href="#top"><span class="brand-mark">⌁</span><span>LogSieve <small>v0.1.0</small></span></a><span>Небольшой инструмент, чтобы делиться логами спокойнее.</span><div><a href="https://github.com/GhosTnever-lkm/logsieve" target="_blank" rel="noreferrer">GitHub</a><a href="https://github.com/GhosTnever-lkm/logsieve/blob/main/LICENSE" target="_blank" rel="noreferrer">MIT License</a></div></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="redactor-core.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
