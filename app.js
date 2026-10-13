@@ -44,8 +44,8 @@ function addFiles(fileListInput) {
     if ([...state.files, ...accepted].some((item) => item.key === key)) continue;
     accepted.push({ file, key });
   }
-  const total = [...state.files, ...accepted].reduce((sum, item) => sum + item.file.size, 0);
-  while (total > MAX_TOTAL_BYTES && accepted.length) {
+  const totalBytes = () => [...state.files, ...accepted].reduce((sum, item) => sum + item.file.size, 0);
+  while (totalBytes() > MAX_TOTAL_BYTES && accepted.length) {
     accepted.pop();
     rejected++;
   }
@@ -129,17 +129,22 @@ async function scanFiles() {
 }
 
 function renderHighlighted(text, previews) {
-  if (!previews.length) return escapeHtml(text.slice(0, 12000));
+  const previewEnd = Math.min(text.length, 12000);
+  if (!previews.length) {
+    const plainPreview = escapeHtml(text.slice(0, previewEnd));
+    return text.length > previewEnd ? `${plainPreview}\n… [предпросмотр ограничен 12 000 символами]` : plainPreview;
+  }
   let out = '';
   let cursor = 0;
   for (const match of previews) {
+    if (match.start >= previewEnd) break;
     if (match.start < cursor) continue;
     out += escapeHtml(text.slice(cursor, match.start));
     out += `<mark title="${escapeHtml(match.types.join(', '))}">${escapeHtml(match.replacement)}</mark>`;
-    cursor = match.end;
+    cursor = Math.min(match.end, previewEnd);
   }
-  out += escapeHtml(text.slice(cursor, 12000));
-  if (text.length > 12000) out += '\n… [предпросмотр ограничен 12 000 символами]';
+  out += escapeHtml(text.slice(cursor, previewEnd));
+  if (text.length > previewEnd) out += '\n… [предпросмотр ограничен 12 000 символами]';
   return out;
 }
 
