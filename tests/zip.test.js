@@ -8,7 +8,8 @@ const path = require('node:path');
 
 test('ZIP writer creates a readable stored archive with UTF-8 names and correct checksums', async () => {
   const source = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
-  const extracted = source.match(/function crc32\([\s\S]*?\n}\n\nfunction makeZip\([\s\S]*?\n}\n/);
+  const normalizedSource = source.replace(/\r\n?/g, '\n');
+  const extracted = normalizedSource.match(/function crc32\([\s\S]*?\n}\n\nfunction makeZip\([\s\S]*?\n}\n/);
   assert.ok(extracted, 'zip writer functions must be present');
   const context = vm.createContext({ TextEncoder, DataView, Uint8Array, Blob });
   vm.runInContext(`${extracted[0]}\nthis.makeZip = makeZip;`, context);

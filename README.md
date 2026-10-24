@@ -49,7 +49,7 @@ Overlapping matches are replaced once. The ZIP manifest records output names, re
 
 ## Development
 
-No build step or package installation is required. Run the static app through a local HTTP server for the same setup used by GitHub Pages. Run the regression tests with Node.js 20 or newer:
+No build step or package installation is required. Run the static app through a local HTTP server for the same setup used by GitHub Pages. Run the regression tests with Node.js 22 or 24; CI checks both versions on Ubuntu and Windows:
 
 ```sh
 npm test
